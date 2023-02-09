@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -25,10 +25,33 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
+  /* eslint-disable */
+
   const [rememberMe, setRememberMe] = useState(false);
-
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const credenciales = {
+    user: "root@root.com",
+    password: "root",
+  };
+  let history = useNavigate();
 
+  const login = () => {
+    if(email === credenciales.user && password === credenciales.password) {
+      history("/dashboard");
+    } else {
+        alert("Wrong password or email");
+    }
+  };
+  const handleChange = (event) => {
+    
+    if (event.target.name === "email" ) {
+      setEmail(event.target.value);
+    } else {
+      setPassword(event.target.value);
+    }
+  };
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -57,10 +80,10 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput name="email" value={email} onChange={handleChange} placeholder="micorreo@ejemplo.com" type="email" label="Email" fullWidth />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput name="password" value={password}  onChange={handleChange} type="password" label="Password" fullWidth />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -75,7 +98,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton onClick={login} type="button" variant="gradient" color="info" fullWidth>
                 sign in
               </MDButton>
             </MDBox>
