@@ -17,6 +17,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -31,27 +32,43 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const credenciales = {
+  const [errorSB, setErrorSB] = useState(false);
+  const closeErrorSB = () => setErrorSB(false);
+  const openErrorSB = () => setErrorSB(true);
+  const credentials  = {
     user: "root@root.com",
     password: "root",
   };
-  let history = useNavigate();
+  const history = useNavigate();
 
   const login = () => {
-    if(email === credenciales.user && password === credenciales.password) {
+    if(email === credentials.user && password === credentials.password) {
       history("/dashboard");
     } else {
-        alert("Wrong password or email");
+      openErrorSB("");
     }
   };
   const handleChange = (event) => {
     
     if (event.target.name === "email" ) {
       setEmail(event.target.value);
-    } else {
+    } else if (event.target.name === "password" ) {
       setPassword(event.target.value);
     }
   };
+
+  const renderErrorSB = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title="Invalid Credentials"
+      content="The email or password entered is incorrect"
+      open={errorSB}
+      onClose={closeErrorSB}
+      close={closeErrorSB}
+      bgWhite
+    />
+  );
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -80,7 +97,7 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput name="email" value={email} onChange={handleChange} placeholder="micorreo@ejemplo.com" type="email" label="Email" fullWidth />
+              <MDInput name="email" value={email} onChange={handleChange} placeholder="my_email@example.com" type="email" label="Email" fullWidth />
             </MDBox>
             <MDBox mb={2}>
               <MDInput name="password" value={password}  onChange={handleChange} type="password" label="Password" fullWidth />
@@ -116,6 +133,7 @@ function Basic() {
                   Sign up
                 </MDTypography>
               </MDTypography>
+              {renderErrorSB}
             </MDBox>
           </MDBox>
         </MDBox>
